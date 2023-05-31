@@ -44,6 +44,7 @@ const Packs = () => {
     document_requis: "",
     delai_traitement: "",
     picture: null,
+    userid: user?._id
   });
   //image related
   const [File, setFile] = useState();
@@ -121,6 +122,7 @@ const Packs = () => {
       document_requis: "",
       delai_traitement: "",
       picture: null,
+      userid: user?._id
     });
   };
 
@@ -373,10 +375,10 @@ const Packs = () => {
                     />
                   </label>
                 </div>
-              ) : formValues.avatar ? (
+              ) : formValues.picture ? (
                 <div className=" relative w-40 h-hidden rounded-md shadow-inner mx-auto ">
                   <img
-                    src={`${path}uploads/images/${formValues.avatar}`}
+                    src={`${path}uploads/images/${formValues.picture}`}
                     alt="product_pic"
                     className="h-full w-full object-cover object-center rounded-md"
                   />

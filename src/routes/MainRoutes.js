@@ -47,7 +47,7 @@ const MainRoutes = () => {
 
           </>
         }
-        <div className='w-full overflow-auto' style={{ maxHeight: '85vh' }} >
+        <div className='w-full overflow-auto' style={{ maxHeight: `${['/login', '/register'].includes(location.pathname) ? '97vh' : '85vh'}` }} >
           <Routes>
 
             <Route index element={user ? <Dashboard /> : <LandingPage />}

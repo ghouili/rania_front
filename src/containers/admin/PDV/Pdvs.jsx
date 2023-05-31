@@ -33,9 +33,11 @@ import { RxSection } from "react-icons/rx";
 
 import InputField from "../../../components/inputField/InputField";
 import { path } from "../../../utils/Variables";
+import { DisplayBigger } from "../../../components";
 
 const Pdvs = () => {
   const [open, setOpen] = useState(false);
+  const [fileDisplay, setFileDisplay] = useState(null);
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setfilterData] = useState([]);
@@ -53,6 +55,13 @@ const Pdvs = () => {
     patent: "",
     cin: "",
   });
+  //display bigger files::
+  const [openDisplay, setOpenDisplay] = useState(false);
+  //handel display bigger files::
+  const handleOpenDisplay = (file) => {
+    setOpenDisplay(!openDisplay);
+    setFileDisplay(file);
+  };
 
   //image related
   const [avatarFile, setAvatarFile] = useState();
@@ -241,7 +250,7 @@ const Pdvs = () => {
     formData.append("register_comm", formValues.register_comm);
     formData.append("shop_name", formValues.shop_name);
     formData.append("secter", formValues.secter);
-    formData.append("active", true);
+    // formData.append("active", true);
     try {
       let url, result;
       if (formValues._id) {
@@ -311,7 +320,7 @@ const Pdvs = () => {
       }
     }
   };
-  
+
   return (
     <div className="w-full border mt-4 bg-white p-4 shadow-sm rounded-sm">
       <div className="w-full flex items-center justify-between">
@@ -381,13 +390,17 @@ const Pdvs = () => {
               patent,
               cin,
             }) => {
-              if (active == "null") { return null;}
+              if (active == "null") {
+                return null;
+              }
               return (
                 <div
                   key={_id}
                   className="flex flex-col border bg-gray-100 rounded-md shadow py-4 px-2"
                 >
-                  <div className="w-full flex justify-center">
+                  <div
+                    className="w-full flex justify-center"
+                  >
                     <img
                       src={`${path}uploads/images/${avatar}`}
                       alt="user Pic"
@@ -417,12 +430,12 @@ const Pdvs = () => {
                       </div>
                     </div>
                     <div className="w-full flex justify-center">
-                      <object
-                        data={`${path}uploads/images/${cin}`}
-                        aria-label="pdv cin"
-                        className="w-4/5 h-auto rounded-sm"
-                        style={{ maxHeight: "100%", maxWidth: "100%" }}
-                      />
+                      <h1
+                        className=" cursor-pointer text-blue-700 hover:text-blue-900 underline font-semibold text-lg "
+                        onClick={() => handleOpenDisplay(cin)}
+                      >
+                        CIN
+                      </h1>
                     </div>
                   </div>
                   <div className="w-full border my-2 "></div>
@@ -442,7 +455,13 @@ const Pdvs = () => {
                       </div>
                     </div>
                     <div className="w-full flex justify-center ">
-                      <embed
+                      <h1
+                        className=" cursor-pointer text-blue-700 hover:text-blue-900 underline font-semibold text-lg "
+                        onClick={() => handleOpenDisplay(patent)}
+                      >
+                        Patent
+                      </h1>
+                      {/* <embed
                         src={`${path}uploads/images/${patent}`}
                         // title="pdv patent"
                         className="w-4/5 h-auto rounded-sm"
@@ -451,7 +470,7 @@ const Pdvs = () => {
                         type="application/pdf"
                         width="100%"
                         height="400px"
-                      />
+                      /> */}
                     </div>
                   </div>
                   <div className="w-full border my-2 "></div>
@@ -527,9 +546,9 @@ const Pdvs = () => {
       <Fragment>
         <Dialog open={open} size="xl" handler={ToggleDialog}>
           <DialogHeader>Add an Admin.</DialogHeader>
-          <form onSubmit={handleSubmit} >
+          <form onSubmit={handleSubmit}>
             <DialogBody divider>
-              <div className="overflow-y-auto" style={{maxHeight: "68vh"}}>
+              <div className="overflow-y-auto" style={{ maxHeight: "68vh" }}>
                 <div className="w-full grid grid-cols-3 gap-10 ">
                   <div>
                     {avatarPreviewUrl ? (
@@ -825,6 +844,14 @@ const Pdvs = () => {
             </DialogFooter>
           </form>
         </Dialog>
+      </Fragment>
+      {/* //display bigger files:: */}
+      <Fragment>
+        <DisplayBigger
+          file={fileDisplay}
+          handleOpen={handleOpenDisplay}
+          open={openDisplay}
+        />
       </Fragment>
     </div>
   );

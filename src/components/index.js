@@ -8,4 +8,5 @@ export { default as ServiceCrédit } from './landingpage/serviceCrédit/ServiceC
 export { default as Sidebar } from './sidebar/Sidebar';
 export { default as Navbar_ } from './navbar_/Navbar_';
 export { default as AdminNavbar } from './adminNavbar/Navbar';
+export { default as DisplayBigger } from './displayBigger/DisplayBigger';
 

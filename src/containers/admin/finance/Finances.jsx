@@ -282,7 +282,7 @@ const Finances = () => {
                     type="button"
                     className="relative inline-flex items-center justify-center p-0.5  overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white  focus:ring-4 focus:outline-none focus:ring-green-200 "
                     onClick={() =>
-                      Update_Finance({ _id, email, name, avatar, role })
+                      Update_Finance({ _id, email, name, tel, adress, matricule, avatar, role })
                     }
                   >
                     <span className="relative flex items-center gap-1  px-3 py-1.5 transition-all ease-in duration-75 bg-white  rounded-md group-hover:bg-opacity-0">
@@ -437,8 +437,6 @@ const Finances = () => {
           </form>
         </Dialog>
       </Fragment>
-
-
     </div>
   );
 };
