@@ -4,7 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import {
+  PencilIcon,
+  UserPlusIcon,
+  XMarkIcon,
+  CheckIcon,
+} from "@heroicons/react/24/solid";
+
 import {
   Card,
   CardHeader,
@@ -54,6 +60,14 @@ const TABS = [
 
 const TABLE_HEAD = ["Pack", "PDV", "duree", "etat", "date", ""];
 
+function PMT(ir, np, pv) {
+  var pmt, pvif;
+  if (ir == 0) pmt = -pv / np;
+  pvif = Math.pow(1 + ir, np);
+  if (ir != 0) pmt = (-ir * pv * pvif) / (pvif - 1);
+  return pmt;
+}
+
 const Credit = () => {
   const cookies = new Cookies();
   let user = cookies.get("user");
@@ -66,23 +80,49 @@ const Credit = () => {
   const [packs, setPacks] = useState([]);
   const [packCredits, setPackCredits] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openAccept, setOpenAccept] = useState(false);
+  const [autre, setAutre] = useState(0);
+  const [fraisDoc, setFraisDoc] = useState(0);
+  const [id, setId] = useState(null);
+  const [montant_ech, setMontant_ech] = useState(0);
   const [formValues, setFormValues] = useState({
     montant: 0,
-    montant_ech: "",
     duree: 0,
     grasse: 0,
     rembource: "Mensuelle",
-    date: "",
     packid: "",
     offreid: "",
     userid: user?._id,
   });
+  const [minMant, setMinMant] = useState(0);
+  const [maxMant, setMaxMant] = useState(0);
+  const [errors, setErrors] = useState({
+    montant: null,
+    montant_ech: null,
+    duree: null,
+    grasse: null,
+    rembource: null,
+  });
+
+  const handleOpenAccept = (id) => {
+    setOpenAccept(!openAccept);
+    setFraisDoc(0);
+    setMontant_ech(0);
+    setAutre(0);
+    if (openAccept) {
+      setId(null);
+      return;
+    }
+    handleCalculate(id);
+  };
 
   const handleOpen = () => {
     setOpen(!open);
+    setMinMant(0);
+    setMaxMant(0);
     setFormValues({
       montant: 0,
-      montant_ech: "",
+      montant_ech: 0,
       duree: 0,
       grasse: 0,
       rembource: "Mensuelle",
@@ -147,6 +187,19 @@ const Credit = () => {
   }, []);
 
   const handleInputChange = (e) => {
+    if (e.target.name === "montant") {
+      if (e.target.value < minMant || e.target.value > maxMant) {
+        setErrors({
+          ...errors,
+          montant: "Montant de finnencssement must be correct",
+        });
+      } else {
+        setErrors({
+          ...errors,
+          montant: null,
+        });
+      }
+    }
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value,
@@ -156,8 +209,8 @@ const Credit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission
-
-    console.log(formValues);
+    // console.log("calculate :");
+    // handleCalculate();
 
     try {
       let url, result;
@@ -168,7 +221,7 @@ const Credit = () => {
         url = `${path}credit/add`;
         result = await axios.post(url, formValues);
       }
-      console.log(result);
+      // console.log(result);
       if (result.data.success === true) {
         fetchData();
         swal("Success!", result.data.message, "success");
@@ -185,16 +238,19 @@ const Credit = () => {
     }
   };
 
-  const deleteUser = async (id) => {
+  const Refuse = async (id) => {
     const willDelete = await swal({
       title: "Are you sure?",
-      text: "Are you sure that you want to delete this credit?",
+      text: "Are you sure that you want to Refuse this credit?",
       icon: "warning",
       dangerMode: true,
     });
 
     if (willDelete) {
-      const result = await axios.delete(`http://localhost:5000/credit/${id}`);
+      const result = await axios.put(
+        `http://localhost:5000/credit/etat/${id}`,
+        { etat: "Refusee" }
+      );
 
       if (result.data.success) {
         swal("Success!", result.data.message, "success");
@@ -202,6 +258,54 @@ const Credit = () => {
       } else {
         return swal("Error!", result.adta.message, "error");
       }
+    }
+  };
+
+  const Accept = async (e) => {
+    e.preventDefault();
+    const willDelete = await swal({
+      title: "Are you sure?",
+      text: "Are you sure that you want to Refuse this credit?",
+      icon: "warning",
+      dangerMode: true,
+    });
+
+    if (willDelete) {
+      const result = await axios.put(
+        `http://localhost:5000/credit/etat/${id}`,
+        { etat: "Acceptee", montant_ech: parseInt(montant_ech) + parseInt(autre) + parseInt(fraisDoc) }
+      );
+
+      if (result.data.success) {
+        swal("Success!", result.data.message, "success");
+        fetchData();
+      } else {
+        return swal("Error!", result.adta.message, "error");
+      }
+    }
+  };
+
+  const handleCalculate = async (_id) => {
+    //const amount=setAmount.value;
+    // console.log(formValues);
+    // const PMTV = PMT(0.0025 / 12, 12 - 1, -1 * 1000);
+    console.log(id);
+    let credit;
+    const result = await axios.get(`${path}credit/${_id}`);
+
+    credit = result.data.data;
+    const PMTV = PMT(
+      0.0025 / 12,
+      credit.duree - credit.grasse,
+      -1 * credit.montant
+    );
+
+    if (credit.rembource === "Mensuelle") {
+      setMontant_ech(Math.round(PMTV));
+      // console.log(Math.round(PMTV));
+    } else {
+      setMontant_ech(Math.round(PMTV * 3));
+      // console.log(Math.round(PMTV * 3));
     }
   };
 
@@ -347,13 +451,6 @@ const Credit = () => {
                                 {pdv[0]?.name}
                               </Link>
                             </Typography>
-                            {/* <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal opacity-70"
-                          >
-                            {org}
-                          </Typography> */}
                           </div>
                         </td>
                         <td className={classes}>
@@ -366,13 +463,6 @@ const Credit = () => {
                               <b>{duree}</b> par <b>{rembource}</b> apres{" "}
                               <b>{grasse}</b> mois
                             </Typography>
-                            {/* <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal opacity-70"
-                          >
-                            {org}
-                          </Typography> */}
                           </div>
                         </td>
                         <td className={classes}>
@@ -380,9 +470,15 @@ const Credit = () => {
                             <Chip
                               variant="ghost"
                               size="sm"
-                              // color={online ? "green" : "blue-gray"}
+                              color={
+                                etat === "Acceptee"
+                                  ? "green"
+                                  : etat === "Refusee"
+                                  ? "red"
+                                  : "blue-gray"
+                              }
                               value={etat}
-                              color="blue-gray"
+                              // color="blue-gray"
                             />
                           </div>
                         </td>
@@ -396,11 +492,32 @@ const Credit = () => {
                           </Typography>
                         </td>
                         <td className={classes}>
-                          <Tooltip content="Edit User">
-                            <IconButton variant="text" color="blue-gray">
-                              <PencilIcon className="h-4 w-4" />
-                            </IconButton>
-                          </Tooltip>
+                          {etat === "Refusee" ? null : (
+                            <Tooltip content="Refuse Credit">
+                              <IconButton
+                                variant="text"
+                                color="red"
+                                onClick={() => Refuse(_id)}
+                              >
+                                <XMarkIcon className="h-5 w-5 text-red-900" />
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                          {etat === "Acceptee" ? null : (
+                            <Tooltip content="Accept Credit">
+                              <IconButton
+                                variant="text"
+                                color="green"
+                                onClick={() => {
+                                  console.log(_id);
+                                  setId(_id);
+                                  handleOpenAccept(_id);
+                                }}
+                              >
+                                <CheckIcon className="h-5 w-5 text-green-900 " />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </td>
                       </tr>
                     );
@@ -479,9 +596,11 @@ const Credit = () => {
                     id="crditid"
                     value={formValues.offreid}
                     onChange={(value) => {
+                      setMinMant(value.montant_min);
+                      setMaxMant(value.montant_max);
                       setFormValues({
                         ...formValues,
-                        offreid: value,
+                        offreid: value._id,
                       });
                     }}
                     label="Select a Credit"
@@ -490,27 +609,24 @@ const Credit = () => {
                       .slice(0)
                       .reverse()
                       .map(({ _id, title, montant_min, montant_max }) => (
-                        <Option key={_id} value={_id}>
+                        <Option
+                          key={_id}
+                          value={{ _id, montant_min, montant_max }}
+                        >
                           {title} : [ {montant_min} -- {montant_max}]
                         </Option>
                       ))}
                   </Select>
                 </div>
+
                 <InputField
                   type="number"
-                  label="Montant de credit:"
+                  label="Montant :"
                   name="montant"
                   placeholder="Montant de credit"
                   value={formValues.montant}
                   onChange={handleInputChange}
-                />
-                <InputField
-                  type="number"
-                  label="Montant echuence:"
-                  name="montant"
-                  placeholder="Montant de credit"
-                  value={formValues.montant}
-                  onChange={handleInputChange}
+                  error={errors.montant}
                 />
                 <InputField
                   type="number"
@@ -563,6 +679,44 @@ const Credit = () => {
               </Button>
               <Button variant="gradient" color="green" type="submit">
                 <span>Confirm</span>
+              </Button>
+            </DialogFooter>
+          </form>
+        </Dialog>
+      </Fragment>
+
+      <Fragment>
+        <Dialog open={openAccept} handler={handleOpenAccept}>
+          <div className="flex items-center justify-between">
+            <DialogHeader>Accept this Credit</DialogHeader>
+            <XMarkIcon className="mr-3 h-5 w-5" onClick={handleOpenAccept} />
+          </div>
+          <form onSubmit={Accept}>
+            <DialogBody divider>
+              <div className="grid gap-6">
+                <Input
+                  label="Mantant decheance"
+                  value={montant_ech}
+                  onChange={(e) => setMontant_ech(e.target.value)}
+                />
+                <Input
+                  label="Frais de dossier"
+                  value={fraisDoc}
+                  onChange={(e) => setFraisDoc(e.target.value)}
+                />
+                <Input
+                  label="Autre"
+                  value={autre}
+                  onChange={(e) => setAutre(e.target.value)}
+                />
+              </div>
+            </DialogBody>
+            <DialogFooter className="space-x-2">
+              <Button variant="outlined" color="red" onClick={handleOpenAccept}>
+                close
+              </Button>
+              <Button variant="gradient" color="green" type="submit">
+                Accept
               </Button>
             </DialogFooter>
           </form>

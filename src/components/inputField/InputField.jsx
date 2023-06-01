@@ -1,6 +1,14 @@
 import React from "react";
 
-const InputField = ({ type, label, name, value, onChange, placeholder }) => {
+const InputField = ({
+  type,
+  label,
+  name,
+  value,
+  onChange,
+  placeholder,
+  error,
+}) => {
   return (
     <div className="">
       <label
@@ -16,9 +24,14 @@ const InputField = ({ type, label, name, value, onChange, placeholder }) => {
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="block w-full p-2 text-gray-900 border border-gray-500 rounded-lg bg-gray-50 
-        sm:text-xs focus:ring-blue-500 focus:border-blue-500 focus:outline-none "
+        className={`block w-full p-2 border rounded-lg bg-gray-50 
+        sm:text-xs focus:ring-blue-500 focus:border-blue-500 focus:outline-none ${
+          error
+            ? "text-red-700 border-red-700"
+            : "text-gray-900 border-gray-500"
+        }`}
       />
+      <span className="text-red-700 -mt-1 text-xs">{error}</span>
     </div>
   );
 };
