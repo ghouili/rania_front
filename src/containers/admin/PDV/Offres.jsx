@@ -17,7 +17,7 @@ import {
 } from "@material-tailwind/react";
 
 import Cookies from "universal-cookie";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { path } from "../../../utils/Variables";
 
 // import {
@@ -28,6 +28,8 @@ import { path } from "../../../utils/Variables";
 // initTE({ Tab });
 const Offres = () => {
   const pamars = useParams();
+  const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [credits, setCredits] = useState([]);
   const [open, setOpen] = useState(1);
@@ -144,10 +146,19 @@ const Offres = () => {
                           <span>{title}</span>
                         </div>
                       </AccordionHeader>
-                      <AccordionBody className="px-10 text-lg font-medium">
+                      <AccordionBody className="px-10 text-lg font-medium flex flex-col items-start gap-4">
                         <span>{description}</span>
-                        <br />
-                        Montant : De {montant_min} à {montant_max} DT
+                        <span>
+                          Montant : De {montant_min} à {montant_max} DT
+                        </span>
+                        <Button
+                          variant="outlined"
+                          color="blue-gray"
+                          size="sm"
+                          onClick={() => navigate("/credit")}
+                        >
+                          Demander
+                        </Button>
                       </AccordionBody>
                     </Accordion>
                   )

@@ -81,10 +81,23 @@ const Credit = () => {
   const [packCredits, setPackCredits] = useState([]);
   const [open, setOpen] = useState(false);
   const [openAccept, setOpenAccept] = useState(false);
-  const [autre, setAutre] = useState(0);
-  const [fraisDoc, setFraisDoc] = useState(0);
-  const [id, setId] = useState(null);
+
+  const [autre, setAutre] = useState(7);
+  const [fraisDoc, setFraisDoc] = useState(120);
   const [montant_ech, setMontant_ech] = useState(0);
+  const [id, setId] = useState(null);
+
+  const [credit, setCredit] = useState({
+    _id: "",
+    montant: 0,
+    interet: 1.25,
+    duree: 0,
+    grasse: 0,
+    montant_ech: 0,
+    rembource: "Mensuelle",
+    etat: "Acceptee",
+  });
+
   const [formValues, setFormValues] = useState({
     montant: 0,
     duree: 0,
@@ -104,16 +117,16 @@ const Credit = () => {
     rembource: null,
   });
 
-  const handleOpenAccept = (id) => {
+  const handleOpenAccept = () => {
     setOpenAccept(!openAccept);
-    setFraisDoc(0);
-    setMontant_ech(0);
-    setAutre(0);
-    if (openAccept) {
-      setId(null);
-      return;
-    }
-    handleCalculate(id);
+    // setFraisDoc(0);
+    // setMontant_ech(0);
+    // setAutre(0);
+    // if (openAccept) {
+    //   setId(null);
+    //   return;
+    // }
+    // handleCalculate(id);
   };
 
   const handleOpen = () => {
@@ -151,6 +164,13 @@ const Credit = () => {
       setfilterData(masterData);
       setSearch(text);
     }
+  };
+
+  const fetchCredit = async (id) => {
+    const result = await axios.get(`${path}credit/${id}`);
+
+    setCredit(result.data.data);
+    handleOpenAccept();
   };
 
   const fetchPdvData = async () => {
@@ -271,13 +291,30 @@ const Credit = () => {
     });
 
     if (willDelete) {
+      // await handleCalculate();
+      let echeance = await handleCalculate();
+      console.log({
+        interet: credit.interet,
+        duree: credit.duree,
+        grasse: credit.grasse,
+        montant_ech: echeance,
+        etat: "Acceptee",
+      });
       const result = await axios.put(
-        `http://localhost:5000/credit/etat/${id}`,
-        { etat: "Acceptee", montant_ech: parseInt(montant_ech) + parseInt(autre) + parseInt(fraisDoc) }
+        `http://localhost:5000/credit/etat/${credit._id}`,
+        {
+          interet: credit.interet,
+          duree: credit.duree,
+          grasse: credit.grasse,
+          montant_ech: echeance,
+          etat: "Acceptee",
+        }
       );
 
       if (result.data.success) {
         swal("Success!", result.data.message, "success");
+        setAutre(120);
+        setFraisDoc(7);
         fetchData();
       } else {
         return swal("Error!", result.adta.message, "error");
@@ -285,32 +322,25 @@ const Credit = () => {
     }
   };
 
-  const handleCalculate = async (_id) => {
-    //const amount=setAmount.value;
-    // console.log(formValues);
-    // const PMTV = PMT(0.0025 / 12, 12 - 1, -1 * 1000);
-    console.log(id);
-    let credit;
-    const result = await axios.get(`${path}credit/${_id}`);
+  const handleCalculate = async () => {
+    let echeance =
+      (credit.montant +
+        (credit.montant * credit.interet) / 100 +
+        (credit.montant * autre) / 100 +
+        fraisDoc) /
+      (credit.duree - credit.grasse);
 
-    credit = result.data.data;
-    const PMTV = PMT(
-      0.0025 / 12,
-      credit.duree - credit.grasse,
-      -1 * credit.montant
-    );
+    console.log(Math.round(echeance));
 
     if (credit.rembource === "Mensuelle") {
-      setMontant_ech(Math.round(PMTV));
-      // console.log(Math.round(PMTV));
+      return Math.round(echeance);
     } else {
-      setMontant_ech(Math.round(PMTV * 3));
-      // console.log(Math.round(PMTV * 3));
+      return Math.round(echeance * 3);
     }
   };
 
   return (
-    <div className="w-full mt-4 ">
+    <div className=" mt-4 ">
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
           <div className="mb-8 flex items-center justify-between gap-8">
@@ -508,11 +538,7 @@ const Credit = () => {
                               <IconButton
                                 variant="text"
                                 color="green"
-                                onClick={() => {
-                                  console.log(_id);
-                                  setId(_id);
-                                  handleOpenAccept(_id);
-                                }}
+                                onClick={() => fetchCredit(_id)}
                               >
                                 <CheckIcon className="h-5 w-5 text-green-900 " />
                               </IconButton>
@@ -630,6 +656,15 @@ const Credit = () => {
                 />
                 <InputField
                   type="number"
+                  label="Interet :"
+                  name="montant"
+                  placeholder="Montant de credit"
+                  value={1.25}
+                  onChange={handleInputChange}
+                  disabled={true}
+                />
+                <InputField
+                  type="number"
                   label="Duree par mois:"
                   name="duree"
                   placeholder="Duree de payement"
@@ -686,18 +721,29 @@ const Credit = () => {
       </Fragment>
 
       <Fragment>
-        <Dialog open={openAccept} handler={handleOpenAccept}>
+        <Dialog size="lg" open={openAccept} handler={handleOpenAccept}>
           <div className="flex items-center justify-between">
             <DialogHeader>Accept this Credit</DialogHeader>
             <XMarkIcon className="mr-3 h-5 w-5" onClick={handleOpenAccept} />
           </div>
           <form onSubmit={Accept}>
             <DialogBody divider>
-              <div className="grid gap-6">
+              <div className="grid grid-cols-2 gap-6">
                 <Input
-                  label="Mantant decheance"
-                  value={montant_ech}
-                  onChange={(e) => setMontant_ech(e.target.value)}
+                  label="Mantant demander"
+                  value={credit.montant}
+                  // onChange={(e) => setMontant_ech(e.target.value)}
+                  disabled
+                />
+                <Input
+                  label="Taux d'intret"
+                  value={credit.interet}
+                  onChange={(e) =>
+                    setCredit({
+                      ...credit,
+                      interet: e.target.value,
+                    })
+                  }
                 />
                 <Input
                   label="Frais de dossier"
@@ -705,9 +751,29 @@ const Credit = () => {
                   onChange={(e) => setFraisDoc(e.target.value)}
                 />
                 <Input
-                  label="Autre"
+                  label="Assurance"
                   value={autre}
                   onChange={(e) => setAutre(e.target.value)}
+                />
+                <Input
+                  label="Durree"
+                  value={credit.duree}
+                  onChange={(e) =>
+                    setCredit({
+                      ...credit,
+                      duree: e.target.value,
+                    })
+                  }
+                />
+                <Input
+                  label="Period Grass"
+                  value={credit.grasse}
+                  onChange={(e) =>
+                    setCredit({
+                      ...credit,
+                      grasse: e.target.value,
+                    })
+                  }
                 />
               </div>
             </DialogBody>

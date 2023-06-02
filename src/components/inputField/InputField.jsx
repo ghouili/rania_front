@@ -7,6 +7,7 @@ const InputField = ({
   value,
   onChange,
   placeholder,
+  disabled,
   error,
 }) => {
   return (
@@ -24,6 +25,7 @@ const InputField = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        disabled={disabled}
         className={`block w-full p-2 border rounded-lg bg-gray-50 
         sm:text-xs focus:ring-blue-500 focus:border-blue-500 focus:outline-none ${
           error
