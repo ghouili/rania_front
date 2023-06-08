@@ -60,9 +60,9 @@ const Navbar = () => {
       <div className="h-14 border-b rounded-sm flex flex-row items-center justify-between bg-white shadow-sm">
         {/* left side */}
 
-        <div className="flex flex-row items-center pl-3 gap-3">
+        {/* <div className="flex flex-row items-center pl-3 gap-3"> */}
           <div
-            className="w-1/4 flex items-center justify-center cursor-pointer text-gray-700"
+            className=" pl-4 flex items-center justify-center cursor-pointer text-gray-700"
             onClick={ToggleSidebar}
           >
             {sidebarOpen ? (
@@ -71,18 +71,8 @@ const Navbar = () => {
               <TbSquareRoundedArrowRight size={24} />
             )}
           </div>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search.."
-              className=" text-sm py-2 pl-10 pr-2 rounded-md border-none outli
-             focus:outline-none"
-            />
-            <div className="absolute top-2 left-1.5  ">
-              <AiOutlineSearch size={20} color="#898694" />
-            </div>
-          </div>
-        </div>
+          
+        {/* </div> */}
 
         {/* right side */}
         <div className="flex flex-row items-center gap-3 pr-7">
@@ -102,16 +92,10 @@ const Navbar = () => {
             <BsSun size={22} />
           }
           </div>
-          <div
-            className=" p-2.5 rounded-full cursor-pointer hover:bg-blue-50 text-gray-600 hover:text-blue-400"
-            // onClick={}
-          >
-            <BsBell size={22} />
-            
-          </div>
+         
           {!user ? null : (
             <div className="relative p-2.5 rounded-full cursor-pointer hover:bg-blue-50 text-gray-600 hover:text-blue-400">
-              <BiBell size={22} />
+              <BsBell size={22} />
               <div className="absolute flex items-center justify-center rounded-full w-4 h-4 bg-red-600 right-0 top-0 ">
                 <p className="text-xs font-medium text-white ">5</p>
               </div>

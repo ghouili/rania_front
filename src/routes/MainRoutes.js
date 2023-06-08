@@ -12,17 +12,11 @@ import Test from '../containers/simulateur/Test';
 const MainRoutes = () => {
   const location = useLocation();
   const cookies = new Cookies();
-
-  //const [data, setData] = useState([]);
-
   let user = null;
   user = cookies.get('user');
 
-  //if (user === true) { traitement_01 } else { traitement_02 }
-  //{user === true ? traitement_01  : traitement_02 }
-
   return (
-    <div className={`w-screen h-screen flex bg-LightBGColor `}>
+    <div className={`w-screen min-h-screen flex bg-LightBGColor `}>
 
 
       {['/login', '/register'].includes(location.pathname) || !user ? null :
@@ -43,92 +37,97 @@ const MainRoutes = () => {
               :
               <Navbar />
             }
-
-
           </>
         }
-        <div className=' overflow-auto' style={{ maxHeight: `${['/login', '/register'].includes(location.pathname) ? '97vh' : '85vh'}` }} >
+        <div className=' overflow-auto h-fit' style={!user || ['/login', '/register'].includes(location.pathname) ? {} : { maxHeight: '97vh' }} >
           <Routes>
 
             <Route index element={user ? <Dashboard /> : <LandingPage />}
-
             />
 
             <Route path='login' element={
               <Login />
             } />
+
             <Route path='pdvs' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Pdvs />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Pdvs />
+              </PrivetRoute>
             } />
+
             <Route path='requests' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <PdvRequests />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <PdvRequests />
+              </PrivetRoute>
             } />
+
             <Route path='packs' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Packs />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Packs />
+              </PrivetRoute>
             } />
+
             <Route path='packs/credit' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Offres_pack />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Offres_pack />
+              </PrivetRoute>
             } />
+
             <Route path='nospack' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Nospack />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Nospack />
+              </PrivetRoute>
             } />
+
             <Route path='pack/:id' element={
               <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
                 <PackDetails />
               </PrivetRoute>
             } />
+
             <Route path='wallet' element={
-
-              <Wallet />
-
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Wallet />
+              </PrivetRoute>
             } />
+
             <Route path='register' element={
               <Register />
             } />
+
             <Route path='simulateur' element={
-
               <Simulateur />
+            } />
 
-            } />
             <Route path='users' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Users />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Users />
+              </PrivetRoute>
             } />
+
             <Route path='finance' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Finance />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Finance />
+              </PrivetRoute>
             } />
+
             <Route path='pdv' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Pointvente />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Pointvente />
+              </PrivetRoute>
             } />
+
             <Route path='credit' element={
-              // <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
-              <Credit />
-              // </PrivetRoute>
+              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+                <Credit />
+              </PrivetRoute>
             } />
+
             <Route path='offres/:id' element={
               <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
                 <Offres />
               </PrivetRoute>
             } />
-            <Route path='test' element={
-              <Test />
-            } />
-
 
           </Routes>
         </div>

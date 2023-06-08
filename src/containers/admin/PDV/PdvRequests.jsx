@@ -56,7 +56,9 @@ const PdvRequests = () => {
   };
 
   const fetchData = async () => {
-    const result = await axios.post(`http://localhost:5000/user/pdvs`, {active: "null"});
+    const result = await axios.post(`http://localhost:5000/user/pdvs`, {
+      active: "null",
+    });
 
     setfilterData(result.data.data);
     setmasterData(result.data.data);
@@ -67,11 +69,26 @@ const PdvRequests = () => {
     fetchData();
   }, []);
 
-  const ToggleLock = async (lock, id) => {
+  const ToggleLock = async (lock, id, tel) => {
+    // Convert `tel` to a string and check if it starts with "216"
+    const telString = String(tel);
+    const recipientNumber = telString.startsWith("216")
+      ? telString
+      : `216${telString}`;
+
+    const smsAPIUrl = "https://www.winsmspro.com/sms/sms/api";
+    const apiKey = "eUVFc2k9RT1JcGpmQVBJb2FzeWE=";
+    const senderName = "KHALLASLI";
+    const message = `${
+      lock
+        ? "Congratulations! Your Request have been approved to become a Point de Vent for Khallasli."
+        : "Unfortunately! You Request have been Declined to become a Point de Vent for Khallasli."
+    }`;
+
     const willDelete = await swal({
       title: "Are you sure?",
       text: `Are you sure that you want to ${
-        lock ? "UnLock" : "Lock"
+        lock ? "Accept" : "Decline"
       } this PDV?`,
       icon: "warning",
       dangerMode: true,
@@ -84,6 +101,22 @@ const PdvRequests = () => {
 
       if (result.data.success) {
         swal("Success!", result.data.message, "success");
+
+        const url = `${smsAPIUrl}?action=send-sms&api_key=${apiKey}&to=${recipientNumber}&from=
+        ${senderName}&sms=${encodeURIComponent(message)}`;
+
+        fetch(url)
+          .then((response) => {
+            if (response.ok) {
+              console.log("SMS sent successfully");
+            } else {
+              console.error("Failed to send SMS");
+            }
+          })
+          .catch((error) => {
+            console.error("Error occurred while sending SMS:", error);
+          });
+
         fetchData();
       } else {
         return swal("Error!", result.adta.message, "error");
@@ -227,7 +260,7 @@ const PdvRequests = () => {
                     <button
                       type="button"
                       className={`relative inline-flex items-center justify-center p-0.5  overflow-hidden text-sm font-medium text-gray-900 rounded-lg group hover:text-white  focus:ring-4 focus:outline-none focus:ring-green-200 bg-gradient-to-br  from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 `}
-                      onClick={() => ToggleLock(true, _id)}
+                      onClick={() => ToggleLock(true, _id, tel)}
                     >
                       <span className="relative flex items-center gap-1  px-3 py-1.5 transition-all ease-in duration-75 bg-white  rounded-md group-hover:bg-opacity-0">
                         <BsPersonCheck size={18} />

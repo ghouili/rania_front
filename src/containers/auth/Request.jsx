@@ -193,15 +193,15 @@ const Request = () => {
   };
 
   return (
-    <div className="w-full h-full  ">
-      <div className="w-full flex justify-center py-4 cursor-pointer border-2">
+    <div className="w-full h-full pb-10  ">
+      <div className="w-full flex justify-center py-4 cursor-pointer ">
         <Link to="/">
           <img src={Logo} alt="logo" />
         </Link>
       </div>
-      <div className="w-full px-16 lg:px-28 flex items-center justify-center border-2">
+      <div className="w-full px-16 lg:px-28 flex items-center justify-center ">
         {/* <div className="absolute top-0 left-1/2 h-2 w-32 rounded-b-md bg-blue-950"></div> */}
-        <div className="w-full  border bg-white rounded-md py-10 px-16 ">
+        <div className="w-full   bg-white rounded-md py-10 px-16 ">
           <div className="w-full py-4 px-8">
             <Stepper
               activeStep={activeStep}

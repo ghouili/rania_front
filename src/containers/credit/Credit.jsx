@@ -5,11 +5,12 @@ import Cookies from "universal-cookie";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
-  PencilIcon,
-  UserPlusIcon,
   XMarkIcon,
   CheckIcon,
 } from "@heroicons/react/24/solid";
+import {
+  EyeIcon
+} from "@heroicons/react/24/outline";
 
 import {
   Card,
@@ -35,6 +36,9 @@ import {
 } from "@material-tailwind/react";
 
 import { BsFileEarmarkPlus } from "react-icons/bs";
+import { IoCalendarOutline } from "react-icons/io5";
+import { FaCoins, FaPercent } from "react-icons/fa";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { path } from "../../utils/Variables";
 import InputField from "../../components/inputField/InputField";
 import swal from "sweetalert";
@@ -117,6 +121,11 @@ const Credit = () => {
     rembource: null,
   });
 
+  const [pdvCreditopen, setPdvCreditopen] = useState(false);
+  const [displayEcheance, setDisplayEcheance] = useState(0);
+
+  const handelPdvCreditopen = () => setPdvCreditopen(!pdvCreditopen);
+
   const handleOpenAccept = () => {
     setOpenAccept(!openAccept);
     // setFraisDoc(0);
@@ -166,11 +175,16 @@ const Credit = () => {
     }
   };
 
-  const fetchCredit = async (id) => {
+  const fetchCredit = async (id, display) => {
     const result = await axios.get(`${path}credit/${id}`);
 
     setCredit(result.data.data);
-    handleOpenAccept();
+    if (display) {
+      let echeance = await handleCalculate();
+      setDisplayEcheance(echeance);
+      return handelPdvCreditopen();
+    }
+    return handleOpenAccept();
   };
 
   const fetchPdvData = async () => {
@@ -293,13 +307,13 @@ const Credit = () => {
     if (willDelete) {
       // await handleCalculate();
       let echeance = await handleCalculate();
-      console.log({
-        interet: credit.interet,
-        duree: credit.duree,
-        grasse: credit.grasse,
-        montant_ech: echeance,
-        etat: "Acceptee",
-      });
+      // console.log({
+      //   interet: credit.interet,
+      //   duree: credit.duree,
+      //   grasse: credit.grasse,
+      //   montant_ech: echeance,
+      //   etat: "Acceptee",
+      // });
       const result = await axios.put(
         `http://localhost:5000/credit/etat/${credit._id}`,
         {
@@ -355,15 +369,15 @@ const Credit = () => {
             <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
               <Button
                 variant="outlined"
-                color="blue-gray"
+                color="green"
                 size="sm"
-                onClick={() => setSearch("")}
+                onClick={() => searchFilter("")}
               >
                 view all
               </Button>
               <Button
                 className="flex items-center gap-3"
-                color="blue"
+                color="green"
                 size="sm"
                 onClick={handleOpen}
               >
@@ -522,6 +536,15 @@ const Credit = () => {
                           </Typography>
                         </td>
                         <td className={classes}>
+                          <Tooltip content="Accept Credit">
+                            <IconButton
+                              variant="text"
+                              color="blue"
+                              onClick={() => fetchCredit(_id, true)}
+                            >
+                              <EyeIcon className="h-5 w-5 text-green-900 " />
+                            </IconButton>
+                          </Tooltip>
                           {etat === "Refusee" ? null : (
                             <Tooltip content="Refuse Credit">
                               <IconButton
@@ -786,6 +809,58 @@ const Credit = () => {
               </Button>
             </DialogFooter>
           </form>
+        </Dialog>
+      </Fragment>
+
+      <Fragment>
+        <Button onClick={handelPdvCreditopen} variant="gradient">
+          Open Dialog
+        </Button>
+        <Dialog
+          open={pdvCreditopen}
+          handler={handelPdvCreditopen}
+          className="p-4"
+        >
+          <div className="w-full rounded-md border-gray-500 border">
+            <div className="w-full p-4 flex gap-2 flex-col justify-center items-center border-b border-gray-500 ">
+              <div className="bg-green-400 p-2 text-green-900 rounded-full ">
+                <IoCalendarOutline size={24} />
+              </div>
+              <span className="text-center text-sm font-medium">
+                Remboursement Mensuel
+              </span>
+              <span className="text-green-500 font-semibold">{displayEcheance} Dt</span>
+            </div>
+            <div className="grid grid-cols-3">
+              <div className="p-4 flex gap-2 flex-col justify-center items-center ">
+                <div className="bg-green-400 p-2 text-green-900 rounded-full ">
+                  <FaCoins size={24} />
+                </div>
+                <span className="text-center text-sm font-medium">
+                  Financement Sollicite
+                </span>
+                <span className="text-green-500 font-semibold">{credit.montant} Dt</span>
+              </div>
+              <div className="p-4 flex gap-2 flex-col justify-center items-center border-l border-gray-500 ">
+                <div className="bg-green-400 p-2 text-green-900 rounded-full ">
+                  <HiOutlineClipboardDocumentList size={24} />
+                </div>
+                <span className="text-center text-sm font-medium">
+                  Frais d'etudes de Dossier
+                </span>
+                <span className="text-green-500 font-semibold">{fraisDoc} Dt</span>
+              </div>
+              <div className="p-4 flex gap-2 flex-col justify-center items-center border-l border-gray-500 ">
+                <div className="bg-green-400 p-2 text-green-900 rounded-full ">
+                  <FaPercent size={20} />
+                </div>
+                <span className="text-center text-sm font-medium">
+                  Frais d'Endettement Mensuel
+                </span>
+                <span className="text-green-500 font-semibold">{credit.interet} %</span>
+              </div>
+            </div>
+          </div>
         </Dialog>
       </Fragment>
     </div>

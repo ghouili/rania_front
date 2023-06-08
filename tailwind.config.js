@@ -12,7 +12,7 @@ module.exports = withMT({
     colors: {
       costumGreen: '#8BC540',
       costumBlue: '#132A4E',
-      customColor: '#7367F0',
+      customColor: '#8BC540',
       LightBGColor: '#F8F7FA',
       DarkBGColor: '#25293C',
     },

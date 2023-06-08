@@ -1,7 +1,7 @@
 import "./sidebar.css";
 import React, { Fragment, useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BsShop, BsBank } from "react-icons/bs";
+import { BsShop, BsBank, BsCalculator } from "react-icons/bs";
 import { TbLayoutDashboard, TbMoneybag } from "react-icons/tb";
 import { GiShop } from "react-icons/gi";
 import { FiUsers } from "react-icons/fi";
@@ -59,42 +59,54 @@ const Sidebar = () => {
         {/* Dashboard::: */}
         <Link
           to="/"
-          className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold hover:text-gray-800 hover:bg-gray-200 ${
+          className={`rounded-md flex flex-row items-center ${
+            sidebarOpen ? "" : "justify-center"
+          } px-3 py-2 gap-2 text-base font-semibold hover:text-gray-800 hover:bg-gray-200 ${
             location.pathname === "/"
               ? "text-gray-100 bg-customColor"
               : "text-gray-800"
           } `}
         >
           <TbLayoutDashboard size={26} />
-          <span>Dashboard</span>
+          <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+            Dashboard
+          </span>
         </Link>
 
         {/* user::: */}
         {user?.role === "admin" ? (
           <Link
             to="/users"
-            className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
+            className={`rounded-md flex flex-row items-center ${
+              sidebarOpen ? "" : "justify-center"
+            } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
               location.pathname === "/users"
                 ? "text-gray-100 bg-customColor"
                 : "text-gray-800"
             } `}
           >
             <FiUsers size={26} />
-            <span>Admins</span>
+            <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+              Admins
+            </span>
           </Link>
         ) : null}
         {/* Finance::: */}
         {user?.role === "admin" ? (
           <Link
             to="/finance"
-            className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
+            className={`rounded-md flex flex-row items-center ${
+              sidebarOpen ? "" : "justify-center"
+            } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
               location.pathname === "/finance"
                 ? "text-gray-100 bg-customColor"
                 : "text-gray-800"
             } `}
           >
             <BsBank size={26} />
-            <span>Micro-Finances</span>
+            <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+              Micro-Finances
+            </span>
           </Link>
         ) : null}
 
@@ -102,14 +114,16 @@ const Sidebar = () => {
         {user?.role === "admin" ? (
           <Link
             to="/pdvs"
-            className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
+            className={`rounded-md flex flex-row items-center ${
+              sidebarOpen ? "" : "justify-center"
+            } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
               location.pathname === "/pdvs"
                 ? "text-gray-100 bg-customColor"
                 : "text-gray-800"
             } `}
           >
             <BsShop size={26} />
-            <span>PDVs</span>
+            <span className={` ${sidebarOpen ? "block" : "hidden"}`}>PDVs</span>
           </Link>
         ) : null}
 
@@ -117,63 +131,87 @@ const Sidebar = () => {
         {user?.role === "admin" ? (
           <Link
             to="/requests"
-            className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
+            className={`rounded-md flex flex-row items-center ${
+              sidebarOpen ? "" : "justify-center"
+            } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
               location.pathname === "/requests"
                 ? "text-gray-100 bg-customColor"
                 : "text-gray-800"
             } `}
           >
             <BsShop size={26} />
-            <span>PDVs Requests</span>
+            <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+              PDVs Requests
+            </span>
           </Link>
         ) : null}
 
         {/* PACKS::: */}
         <Link
           to="/packs"
-          className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
+          className={`rounded-md flex flex-row items-center ${
+            sidebarOpen ? "" : "justify-center"
+          } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
             location.pathname === "/packs"
               ? "text-gray-100 bg-customColor"
               : "text-gray-800"
           } `}
         >
           <TbMoneybag size={26} />
-          <span>Les Packs</span>
+          <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+            Les Packs
+          </span>
         </Link>
-        
+
         {/* packs/credit::: */}
         <Link
           to="/packs/credit"
-          className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
+          className={`rounded-md flex flex-row items-center ${
+            sidebarOpen ? "" : "justify-center"
+          } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
             location.pathname === "/packs/credit"
               ? "text-gray-100 bg-customColor"
               : "text-gray-800"
           } `}
         >
           <IoDocumentTextOutline size={26} />
-          <span>Les Packs Credits </span>
+          <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+            Les Packs Credits{" "}
+          </span>
         </Link>
-        
+
         {/* credit::: */}
         <Link
           to="/credit"
-          className={`rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
+          className={`rounded-md flex flex-row items-center ${
+            sidebarOpen ? "" : "justify-center"
+          } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 ${
             location.pathname === "/credit"
               ? "text-gray-100 bg-customColor"
               : "text-gray-800"
           } `}
         >
           <IoDocumentTextOutline size={26} />
-          <span>Les Credits</span>
+          <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+            Les Credits
+          </span>
         </Link>
+        {/* Simulation::: */}
+        <button
+          onClick={handleOpenDialog}
+          className={`rounded-md  text-gray-800 flex flex-row items-center ${
+            sidebarOpen ? "" : "justify-center"
+          } px-3 py-2 gap-2 text-base font-semibold  hover:text-gray-800 hover:bg-gray-200 
+               
+           `}
+        >
+          <BsCalculator size={26} />
+          <span className={` ${sidebarOpen ? "block" : "hidden"}`}>
+            Simulateur
+          </span>
+        </button>
 
         <Fragment>
-          <button
-            className="rounded-md flex flex-row items-center px-3 py-2 gap-2 text-base font-semibold hover:text-gray-800 hover:bg-gray-200 text-gray-800 "
-            onClick={handleOpenDialog}
-          >
-            Simuler Vos Crédit
-          </button>
           <Dialog open={openDialog} handler={handleOpenDialog}>
             <DialogHeader>
               <h1 className="text-5xl font-bold text-blue-900 my-6">

@@ -15,9 +15,10 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-
 import Cookies from "universal-cookie";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { FaPlus } from "react-icons/fa";
+
 import { path } from "../../../utils/Variables";
 
 // import {
@@ -137,28 +138,33 @@ const Offres = () => {
                         className="px-4"
                       >
                         <div className="flex gap-6 items-center">
+                          <FaPlus />
+                          <span>{title}</span>
+                        </div>
+                      </AccordionHeader>
+                      <AccordionBody className="px-10 text-lg font-medium ">
+                        <div className="flex gap-4 items-start">
                           <Avatar
                             src={`${path}uploads/images/${picture}`}
                             alt="credit_pic"
                             variant="rounded"
                             size="xxl"
                           />
-                          <span>{title}</span>
+                          <div className="flex flex-col items-start gap-4">
+                            <span>{description}</span>
+                            <span className="font-semibold">
+                              Montant : De {montant_min} à {montant_max} DT
+                            </span>
+                            <Button
+                              variant="outlined"
+                              color="blue-gray"
+                              size="sm"
+                              onClick={() => navigate("/credit")}
+                            >
+                              Demander
+                            </Button>
+                          </div>
                         </div>
-                      </AccordionHeader>
-                      <AccordionBody className="px-10 text-lg font-medium flex flex-col items-start gap-4">
-                        <span>{description}</span>
-                        <span>
-                          Montant : De {montant_min} à {montant_max} DT
-                        </span>
-                        <Button
-                          variant="outlined"
-                          color="blue-gray"
-                          size="sm"
-                          onClick={() => navigate("/credit")}
-                        >
-                          Demander
-                        </Button>
                       </AccordionBody>
                     </Accordion>
                   )
