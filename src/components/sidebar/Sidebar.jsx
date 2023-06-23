@@ -26,6 +26,7 @@ import {
   TabsBody,
   Tab,
   TabPanel,
+  Alert,
 } from "@material-tailwind/react";
 import Cookies from "universal-cookie";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -33,18 +34,18 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 const Sidebar = () => {
   const cookies = new Cookies();
   let user = cookies.get("user");
-  const { sidebarOpen, ToggleSidebar } = useContext(GeneralContext);
+  const { sidebarOpen, alert, alertData, setAlert } = useContext(GeneralContext);
   const location = useLocation();
 
   const [openDialog, setOpenDialog] = useState(false);
-
   const handleOpenDialog = () => setOpenDialog(!openDialog);
   return (
     <div
       id="main__sidebar"
       className="sidebar h-screen relative flex flex-col gap-4"
     >
-      <div
+      <Link
+        to="/"
         className={`w-full bg-white flex justify-center items-center ${
           sidebarOpen ? "px-6 py-4" : "p-3"
         } `}
@@ -54,8 +55,8 @@ const Sidebar = () => {
           alt="logo"
           className={`${sidebarOpen ? "w-full h-auto" : "w-full h-auto"}`}
         />
-      </div>
-      <div className="px-3 flex flex-col gap-3">
+      </Link>
+      <div className=" relative px-3 flex flex-col gap-3" style={{height: '75vh'}}>
         {/* Dashboard::: */}
         <Link
           to="/"
@@ -349,6 +350,21 @@ const Sidebar = () => {
             </DialogFooter>
           </Dialog>
         </Fragment>
+        {/* <Fragment>
+
+          <Alert
+            open={alert}
+            onClose={() => setAlert(false)}
+            animate={{
+              mount: { y: 0 },
+              unmount: { y: 100 },
+            }}
+            className="absolute left-5 top-full z-20 bg-[#267e2a]/70 text-[#61ff69] border-l-4 border-[#61ff69] rounded-none font-medium"
+            style={{ width: "40vw" }}
+          >
+            {alertData}
+          </Alert>
+        </Fragment> */}
       </div>
     </div>
   );

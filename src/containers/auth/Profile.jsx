@@ -32,7 +32,6 @@ const Profile = () => {
     name: "Rania Boukabous",
     role: "pdv",
     avatar: "042421a0-0904-11ee-b2e8-fb0ff6cd4d0c.jpeg",
-    password: "$2a$10$USuKhW5rWpROm5ULwrYDIuvsey9SFBbLVOeMFml2yNm5L.PslMlja",
     tel: 53972874,
     ville: "soussa",
     adress: "sousse",
@@ -48,39 +47,32 @@ const Profile = () => {
   const ToggleDialog = () => {
     setOpen(!open);
     setAvatarPreviewUrl(null);
-    setCinPreviewUrl(null);
-    setPatentPreviewUrl(null);
     setAvatarFile(null);
-    setCinFile(null);
-    setPatentFile(null);
-    setUser({
-      email: "",
-      name: "",
-      avatar: "",
-      tel: "",
-      ville: "",
-      adress: "",
-      register_comm: "",
-      shop_name: "",
-      secter: "",
-      patent: "",
-      cin: "",
-    });
+    if (open) {
+      setUser({
+        email: "",
+        name: "",
+        avatar: "",
+        tel: "",
+        ville: "",
+        adress: "",
+        register_comm: "",
+        shop_name: "",
+        secter: "",
+        patent: "",
+        cin: "",
+      });
+      fetchData();
+    }
   };
   //image related
   const [avatarFile, setAvatarFile] = useState();
-  const [cinFile, setCinFile] = useState();
-  const [patentFile, setPatentFile] = useState();
+
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState();
-  const [cinPreviewUrl, setCinPreviewUrl] = useState();
-  const [patentPreviewUrl, setPatentPreviewUrl] = useState();
+
   const [isAvatarValid, setIsAvatarValid] = useState(false);
-  const [isCinValid, setIsCinValid] = useState(false);
-  const [isPatentValid, setIsPatentValid] = useState(false);
 
   const avatarFilePickerRef = useRef();
-  const cinFilePickerRef = useRef();
-  const patentFilePickerRef = useRef();
 
   useEffect(() => {
     if (avatarFile) {
@@ -91,28 +83,6 @@ const Profile = () => {
       fileReader.readAsDataURL(avatarFile);
     }
   }, [avatarFile]);
-
-  useEffect(() => {
-    if (cinFile) {
-      console.log(cinFile);
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setCinPreviewUrl(fileReader.result);
-      };
-      fileReader.readAsDataURL(cinFile);
-    }
-  }, [cinFile]);
-
-  useEffect(() => {
-    if (patentFile) {
-      console.log(patentFile);
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPatentPreviewUrl(fileReader.result);
-      };
-      fileReader.readAsDataURL(patentFile);
-    }
-  }, [patentFile]);
 
   const handleAvatarFilePick = (event) => {
     let pickedFile;
@@ -129,46 +99,15 @@ const Profile = () => {
     /* props.onInput(props.id, pickedFile, fileIsValid); */
   };
 
-  const handleCinFilePick = (event) => {
-    let pickedFile;
-    let fileIsValid = isCinValid;
-    if (event.target.files && event.target.files.length === 1) {
-      pickedFile = event.target.files[0];
-      setCinFile(pickedFile);
-      setIsCinValid(true);
-      fileIsValid = true;
-    } else {
-      setIsCinValid(false);
-      fileIsValid = false;
-    }
-    /* props.onInput(props.id, pickedFile, fileIsValid); */
-  };
-
-  const handlePatentFilePick = (event) => {
-    let pickedFile;
-    let fileIsValid = isPatentValid;
-    if (event.target.files && event.target.files.length === 1) {
-      pickedFile = event.target.files[0];
-      setPatentFile(pickedFile);
-
-      setIsPatentValid(true);
-      fileIsValid = true;
-    } else {
-      setIsPatentValid(false);
-      fileIsValid = false;
-    }
-    /* props.onInput(props.id, pickedFile, fileIsValid); */
-  };
-
   const fetchData = async () => {
     const result = await axios.get(`${path}user/${id}`);
 
     setUser(result.data.data);
   };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleInputChange = (e) => {
     setUser({
@@ -185,21 +124,13 @@ const Profile = () => {
     if (avatarFile) {
       formData.append("avatar", avatarFile);
     }
-    if (cinFile) {
-      formData.append("cin", cinFile);
-    }
-    if (patentFile) {
-      formData.append("patent", patentFile);
-    }
 
-    formData.append("email", user.email);
     formData.append("name", user.name);
     formData.append("tel", user.tel);
     formData.append("ville", user.ville);
     formData.append("adress", user.adress);
-    formData.append("register_comm", user.register_comm);
-    formData.append("shop_name", user.shop_name);
-    formData.append("secter", user.secter);
+    formData.append("newPass", user.newPass);
+    formData.append("confirmPass", user.confirmPass);
     try {
       let url, result;
 
@@ -234,30 +165,31 @@ const Profile = () => {
         {/* Main Col */}
         <div
           id="profile"
-          className="w-full lg:w-3/5 rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
+          className="w-full lg:w-3/5 rounded-lg lg:rounded-l-lg shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
         >
           <div className="p-4 md:p-12 text-left">
             {/* Image for mobile view */}
 
             <div className="flex items-center gap-4">
               <img
-                src="https://i.pinimg.com/236x/6c/70/49/6c7049c585471eee8e292c7a10012a09.jpg"
+                // src="https://i.pinimg.com/236x/6c/70/49/6c7049c585471eee8e292c7a10012a09.jpg"
+                src={`${path}uploads/images/${user.avatar}`}
                 className="w-20 h-20 rounded-full "
                 alt="profile_picture"
               />
               <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold pt-8 lg:pt-0">user.name</h1>
-                <h6 className="text-sm font-medium -mt-1.5"> user.email</h6>
+                <h1 className="text-3xl font-bold pt-8 lg:pt-0">{user.name}</h1>
+                <h6 className="text-sm font-medium -mt-1.5"> {user.email}</h6>
               </div>
             </div>
             <div className="mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"></div>
             <p className="pt-4 text-base font-bold flex items-center justify-start gap-4">
               <BsPhone color="#17491B" size={22} />
-              user.tel
+              {user.tel}
             </p>
             <p className="pt-2 text-gray-600 text-xs lg:text-sm flex items-center justify-start gap-4">
               <CiLocationOn color="#17491B" size={24} />
-              user.adress, user.ville
+              {user.adress}, {user.ville}
             </p>
 
             <div className="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"></div>
@@ -268,23 +200,29 @@ const Profile = () => {
               </div> */}
               <div className="w-full flex  items-center  text-gray-700 gap-4">
                 <GiDiploma size={22} />
-                <h2>user.register_comm</h2>
+                <h2>{user.register_comm}</h2>
               </div>
               <div className="w-full flex  items-center  text-gray-700 gap-4">
                 <BsShop size={20} />
-                <h2>user.shop_name</h2>
+                <h2>{user.shop_name}</h2>
               </div>
               <div className="w-full flex  items-center  text-gray-700 gap-4">
                 <RxSection size={20} />
-                <h2>user.secter</h2>
+                <h2>{user.secter}</h2>
               </div>
             </div>
             {/* Buttons */}
             <div className="pt-12 pb-8">
-              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-full">
+              <button
+                onClick={ToggleDialog}
+                className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-full"
+              >
                 Update
               </button>
-              <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full ml-4">
+              <button
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full ml-4"
+                onClick={ToggleDialog}
+              >
                 Message
               </button>
             </div>
@@ -301,7 +239,7 @@ const Profile = () => {
           <form onSubmit={handleSubmit}>
             <DialogBody divider>
               <div className="overflow-y-auto" style={{ maxHeight: "68vh" }}>
-                <div className="w-full grid grid-cols-3 gap-10 ">
+                <div className="w-full flex items-center justify-center ">
                   <div>
                     {avatarPreviewUrl ? (
                       <div className=" relative w-40 h-hidden rounded-md shadow-inner mx-auto ">
@@ -370,148 +308,6 @@ const Profile = () => {
                       </div>
                     )}
                   </div>
-                  <div>
-                    {cinPreviewUrl ? (
-                      <div className=" relative w-40 h-hidden rounded-md shadow-inner mx-auto ">
-                        <object
-                          data={cinPreviewUrl}
-                          aria-label="cin"
-                          className="h-full w-full object-cover object-center rounded-md"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        />
-                        <label
-                          htmlFor="cinID"
-                          className="absolute p-1 rounded-full bg-purple-50 border border-white -bottom-3 -left-3 text-gray-700 cursor-pointer"
-                        >
-                          <BiEdit size={20} />
-                          <input
-                            type="file"
-                            name="picture"
-                            id="cinID"
-                            className="hidden"
-                            accept=".jpg,.png,.jpeg,.pdf"
-                            ref={cinFilePickerRef}
-                            onChange={handleCinFilePick}
-                          />
-                        </label>
-                      </div>
-                    ) : user.cin ? (
-                      <div className=" relative w-40 h-hidden rounded-md shadow-inner mx-auto ">
-                        <object
-                          data={`${path}uploads/images/${user.cin}`}
-                          aria-label="CIN"
-                          className="h-full w-full object-cover object-center rounded-md"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        />
-                        <label
-                          htmlFor="cinID"
-                          className="absolute p-1 rounded-full bg-purple-50 border border-white -bottom-3 -left-3 text-gray-700 cursor-pointer"
-                        >
-                          <BiEdit size={20} />
-                          <input
-                            type="file"
-                            name="cin"
-                            id="cinID"
-                            className="hidden"
-                            accept=".jpg,.png,.jpeg,.pdf"
-                            ref={cinFilePickerRef}
-                            onChange={handleCinFilePick}
-                          />
-                        </label>
-                      </div>
-                    ) : (
-                      <div className="w-full flex justify-center items-center pb-6 ">
-                        <label
-                          htmlFor="cinID"
-                          className="mx-auto w-fit flex flex-col items-center justify-center rounded-lg border-2 border-gray-700 p-4 text-gray-700 cursor-pointer"
-                        >
-                          <BsPersonVcard size={30} />
-                          <input
-                            type="file"
-                            name="cin"
-                            id="cinID"
-                            className="hidden"
-                            accept=".jpg,.png,.jpeg,.pdf"
-                            ref={cinFilePickerRef}
-                            onChange={handleCinFilePick}
-                          />
-                          <span className="text-gray-700">Select CIN</span>
-                        </label>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    {patentPreviewUrl ? (
-                      <div className=" relative w-40 h-hidden rounded-md shadow-inner mx-auto ">
-                        <object
-                          data={patentPreviewUrl}
-                          // alt="product_pic"
-                          aria-label="Patent"
-                          className="h-full w-full object-cover object-center rounded-md"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        />
-                        <label
-                          htmlFor="patentID"
-                          className="absolute p-1 rounded-full bg-purple-50 border border-white -bottom-3 -left-3 text-gray-700 cursor-pointer"
-                        >
-                          <BiEdit size={20} />
-                          <input
-                            type="file"
-                            name="patent"
-                            id="patentID"
-                            className="hidden"
-                            accept=".jpg,.png,.jpeg,.pdf"
-                            ref={patentFilePickerRef}
-                            onChange={handlePatentFilePick}
-                          />
-                        </label>
-                      </div>
-                    ) : user.patent ? (
-                      <div className=" relative w-40 h-hidden rounded-md shadow-inner mx-auto ">
-                        <object
-                          data={`${path}uploads/images/${user.patent}`}
-                          aria-label="Patent"
-                          className="h-full w-full object-cover object-center rounded-md"
-                        />
-                        <label
-                          htmlFor="patentID"
-                          className="absolute p-1 rounded-full bg-purple-50 border border-white -bottom-3 -left-3 text-gray-700 cursor-pointer"
-                        >
-                          <BiEdit size={20} />
-                          <input
-                            type="file"
-                            name="patent"
-                            id="patentID"
-                            className="hidden"
-                            accept=".jpg,.png,.jpeg,.pdf"
-                            ref={patentFilePickerRef}
-                            onChange={handlePatentFilePick}
-                          />
-                        </label>
-                      </div>
-                    ) : (
-                      <div className="w-full flex justify-center items-center pb-6 ">
-                        <label
-                          htmlFor="patentID"
-                          className="mx-auto w-fit flex flex-col items-center justify-center rounded-lg border-2 border-gray-700 p-4 text-gray-700 cursor-pointer"
-                        >
-                          <HiOutlineDocumentArrowUp size={30} />
-                          <input
-                            type="file"
-                            name="patent"
-                            id="patentID"
-                            className="hidden"
-                            accept=".jpg,.png,.jpeg,.pdf"
-                            ref={patentFilePickerRef}
-                            onChange={handlePatentFilePick}
-                          />
-                          <span className="text-gray-700 font-medium">
-                            Select Patente
-                          </span>
-                        </label>
-                      </div>
-                    )}
-                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 pb-4">
                   <InputField
@@ -522,14 +318,7 @@ const Profile = () => {
                     value={user.name}
                     onChange={handleInputChange}
                   />
-                  <InputField
-                    type="email"
-                    label="Email:"
-                    name="email"
-                    placeholder="Admin Email"
-                    value={user.email}
-                    onChange={handleInputChange}
-                  />
+
                   <InputField
                     type="number"
                     label="Phone Number:"
@@ -555,27 +344,19 @@ const Profile = () => {
                     onChange={handleInputChange}
                   />
                   <InputField
-                    type="text"
-                    label="register de commerce:"
-                    name="register_comm"
-                    placeholder="PDV register de commerce"
-                    value={user.register_comm}
+                    type="password"
+                    label="Password:"
+                    name="newPass"
+                    placeholder="Password"
+                    value={user?.newPass}
                     onChange={handleInputChange}
                   />
                   <InputField
-                    type="text"
-                    label="shop name:"
-                    name="shop_name"
-                    placeholder="PDV shop name"
-                    value={user.shop_name}
-                    onChange={handleInputChange}
-                  />
-                  <InputField
-                    type="text"
-                    label="Secter:"
-                    name="secter"
-                    placeholder="PDV Secter"
-                    value={user.secter}
+                    type="password"
+                    label="Confirm Password:"
+                    name="confirmPass"
+                    placeholder="Confirm Password"
+                    value={user?.confirmPass}
                     onChange={handleInputChange}
                   />
                 </div>

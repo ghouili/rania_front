@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { AdminNavbar, Navbar, Navbar_, Sidebar } from '../components';
+import { AdminNavbar, Navbar, Navbar_, Notification, Sidebar } from '../components';
 import { Register, Login, LandingPage, Packs, Wallet, Simulateur, User, Finance, Pointvente, Offres, Users, Pdvs, PdvRequests, Dashboard, Nospack, PackDetails, Credit, Offres_pack, Profile } from '../containers';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Cookies from 'universal-cookie';
@@ -16,7 +16,8 @@ const MainRoutes = () => {
   user = cookies.get('user');
 
   return (
-    <div className={`w-screen min-h-screen flex bg-LightBGColor `}>
+    <div className={`relative w-screen min-h-screen flex bg-LightBGColor `}>
+      <Notification />
 
 
       {['/login', '/register'].includes(location.pathname) || !user ? null :

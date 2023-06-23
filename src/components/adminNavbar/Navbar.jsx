@@ -1,15 +1,23 @@
 // import "./navbar.css";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  Fragment,
+} from "react";
+
+// import { Alert, Button } from "@material-tailwind/react";
 // import { Link } from 'react-router-dom';
 
 import { BsSun, BsBell } from "react-icons/bs";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdExpand } from "react-icons/io";
 import {
-    TbSquareRoundedArrowLeft,
-    TbSquareRoundedArrowRight,
-  } from "react-icons/tb";
-  import { BiMoon, BiBell } from "react-icons/bi";
+  TbSquareRoundedArrowLeft,
+  TbSquareRoundedArrowRight,
+} from "react-icons/tb";
+import { BiMoon, BiBell } from "react-icons/bi";
 
 import Cookies from "universal-cookie";
 
@@ -17,13 +25,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { GeneralContext } from "../../Hooks/context/GeneralContext";
 
 const Navbar = () => {
-
-  const { sidebarOpen, ToggleSidebar, HandleThemeSwitch, theme } = useContext(GeneralContext);
+  const { sidebarOpen, ToggleSidebar, HandleThemeSwitch, theme } =
+    useContext(GeneralContext);
   const cookies = new Cookies();
   const navigate = useNavigate();
   let user = cookies.get("user");
   const menuRef = useRef(null);
 
+  // const [open, setOpen] = useState(true);
   const [toggleMenu, setToggleMenu] = useState(false);
 
   const handleFullScreen = () => {
@@ -57,21 +66,21 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="h-14 border-b rounded-sm flex flex-row items-center justify-between bg-white shadow-sm">
+      <div className="relative h-14 border-b rounded-sm flex flex-row items-center justify-between bg-white shadow-sm">
         {/* left side */}
 
         {/* <div className="flex flex-row items-center pl-3 gap-3"> */}
-          <div
-            className=" pl-4 flex items-center justify-center cursor-pointer text-gray-700"
-            onClick={ToggleSidebar}
-          >
-            {sidebarOpen ? (
-              <TbSquareRoundedArrowLeft size={24} />
-            ) : (
-              <TbSquareRoundedArrowRight size={24} />
-            )}
-          </div>
-          
+        <div
+          className=" pl-4 flex items-center justify-center cursor-pointer text-gray-700"
+          onClick={ToggleSidebar}
+        >
+          {sidebarOpen ? (
+            <TbSquareRoundedArrowLeft size={24} />
+          ) : (
+            <TbSquareRoundedArrowRight size={24} />
+          )}
+        </div>
+
         {/* </div> */}
 
         {/* right side */}
@@ -86,13 +95,9 @@ const Navbar = () => {
             className=" p-2.5 rounded-full cursor-pointer hover:bg-blue-50 text-gray-600 hover:text-blue-400"
             onClick={HandleThemeSwitch}
           >
-            {theme === 'light' ? 
-            <BiMoon size={22} />
-            :
-            <BsSun size={22} />
-          }
+            {theme === "light" ? <BiMoon size={22} /> : <BsSun size={22} />}
           </div>
-         
+
           {!user ? null : (
             <div className="relative p-2.5 rounded-full cursor-pointer hover:bg-blue-50 text-gray-600 hover:text-blue-400">
               <BsBell size={22} />
@@ -134,6 +139,10 @@ const Navbar = () => {
                   <Link
                     to={`/user/${user._id}`}
                     className="w-full px-3 py-1 text-center hover:bg-blue-700 hover:text-white rounded-md"
+                    onClick={() => {
+                      setToggleMenu(false);
+                      ToggleSidebar();
+                    }}
                   >
                     My Profile
                   </Link>
@@ -171,6 +180,24 @@ const Navbar = () => {
             </div>
           )}
         </div>
+        {/* <Fragment>
+          {!open && (
+            <Button className="absolute top-10" onClick={() => setOpen(true)}>
+              Show Alert
+            </Button>
+          )}
+          <Alert
+            open={open}
+            onClose={() => setOpen(false)}
+            animate={{
+              mount: { y: 0 },
+              unmount: { y: 100 },
+            }}
+            className="absolute left-20 top-0 z-20 bg-[#267e2a]/70 text-[#61ff69] border-l-4 border-[#61ff69] rounded-none font-medium w-1/2"
+          >
+            A dismissible alert with custom animation.
+          </Alert>
+        </Fragment> */}
       </div>
     </>
   );
