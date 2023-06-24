@@ -487,15 +487,21 @@ const Credit = () => {
                     },
                     index
                   ) => {
+
+                    // if (user._id !== userid || userid !== '6464d4db624ebfd44f611142' ) {
+                    //   return null;
+                    // }
+
+                    console.log(user._id);
                     let pack = packs.filter((item) => item._id === packid);
                     let pdv = pdvs.filter((item) => item._id === userid);
                     // console.log(pack);
                     // console.log(pdv);
                     const isLast = index === filterData.length - 1;
                     const classes = isLast
-                      ? "p-4"
-                      : "p-4 border-b border-blue-gray-50";
-
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
+                    
                     return (
                       <tr key={_id}>
                         <td className={classes}>

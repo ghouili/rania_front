@@ -44,22 +44,6 @@ const ProviderContext = ({ children }) => {
     }, [user])
 
 
-    // useEffect(() => {
-    //     socket.on('me', (id) => {
-    //         console.log(id);
-    //     });
-    //     socket.on("Alert", (notification) => {
-    //         setAlert(true);
-    //         setAlertData(notification);
-    //     });
-
-    //     return () => {
-    //         // BAD: this will remove all listeners for the 'foo' event, which may
-    //         // include the ones registered in another component
-    //         socket.off("Alert");
-    //     };
-    // }, []);
-
     useEffect(() => {
         if (!user) {
             let userexists;
