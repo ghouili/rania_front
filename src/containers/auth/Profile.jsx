@@ -41,7 +41,8 @@ const Profile = () => {
     patent: "0424e4f1-0904-11ee-b2e8-fb0ff6cd4d0c.pdf",
     cin: "0424e4f0-0904-11ee-b2e8-fb0ff6cd4d0c.pdf",
     matricule: null,
-    active: "null",
+    newPass: null,
+    confirmPass: null,
   });
 
   const ToggleDialog = () => {
@@ -61,6 +62,8 @@ const Profile = () => {
         secter: "",
         patent: "",
         cin: "",
+        newPass: null,
+        confirmPass: null,
       });
       fetchData();
     }
@@ -129,8 +132,12 @@ const Profile = () => {
     formData.append("tel", user.tel);
     formData.append("ville", user.ville);
     formData.append("adress", user.adress);
-    formData.append("newPass", user.newPass);
-    formData.append("confirmPass", user.confirmPass);
+    if (user.newPass) {
+      formData.append("newPass", user.newPass);
+    }
+    if (user.confirmPass) {
+      formData.append("confirmPass", user.confirmPass);
+    }
     try {
       let url, result;
 

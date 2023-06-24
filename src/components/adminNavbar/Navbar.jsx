@@ -25,7 +25,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { GeneralContext } from "../../Hooks/context/GeneralContext";
 
 const Navbar = () => {
-  const { sidebarOpen, ToggleSidebar, HandleThemeSwitch, theme } =
+  const { sidebarOpen, ToggleSidebar, HandleThemeSwitch, theme, setUser } =
     useContext(GeneralContext);
   const cookies = new Cookies();
   const navigate = useNavigate();
@@ -61,6 +61,7 @@ const Navbar = () => {
 
   const Logout = async () => {
     cookies.remove("user");
+    setUser(null);
     window.location.reload();
   };
 

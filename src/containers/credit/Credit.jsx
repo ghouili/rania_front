@@ -37,6 +37,7 @@ import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { path } from "../../utils/Variables";
 import InputField from "../../components/inputField/InputField";
 import swal from "sweetalert";
+import { socket } from "../../Socket";
 
 const TABS = [
   {
@@ -329,6 +330,12 @@ const Credit = () => {
       );
 
       if (result.data.success) {
+        if (result.data.socketID) {
+          socket.emit("alertUser", {
+            userID: result.data.socketID,
+            data: "Congratulation your Credit was accepted!!",
+          });
+        }
         swal("Success!", result.data.message, "success");
         setAutre(120);
         setFraisDoc(7);

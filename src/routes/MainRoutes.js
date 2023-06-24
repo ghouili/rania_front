@@ -51,47 +51,49 @@ const MainRoutes = () => {
             } />
 
             <Route path='/user/:id' element={
-              <Profile />
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
+                <Profile />
+              </PrivetRoute>
             } />
 
             <Route path='pdvs' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Pdvs />
               </PrivetRoute>
             } />
 
             <Route path='requests' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <PdvRequests />
               </PrivetRoute>
             } />
 
             <Route path='packs' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Packs />
               </PrivetRoute>
             } />
 
             <Route path='packs/credit' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Offres_pack />
               </PrivetRoute>
             } />
 
             <Route path='nospack' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Nospack />
               </PrivetRoute>
             } />
 
             <Route path='pack/:id' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <PackDetails />
               </PrivetRoute>
             } />
 
             <Route path='wallet' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Wallet />
               </PrivetRoute>
             } />
@@ -105,31 +107,31 @@ const MainRoutes = () => {
             } />
 
             <Route path='users' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Users />
               </PrivetRoute>
             } />
 
             <Route path='finance' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Finance />
               </PrivetRoute>
             } />
 
             <Route path='pdv' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Pointvente />
               </PrivetRoute>
             } />
 
             <Route path='credit' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Credit />
               </PrivetRoute>
             } />
 
             <Route path='offres/:id' element={
-              <PrivetRoute permissions={['admin', 'pdv', 'micro_finance']} >
+              <PrivetRoute permissions={['admin', 'pdv', 'finance']} >
                 <Offres />
               </PrivetRoute>
             } />

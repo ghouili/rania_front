@@ -15,7 +15,7 @@ const PrivetRoute = ({ children, permissions }) => {
             return <Navigate replace to='/' />
         }
     } else {
-        return <Navigate  to='/login' replace />
+        return <Navigate  to='/' replace />
     }
 
 }
