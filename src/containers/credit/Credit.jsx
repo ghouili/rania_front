@@ -331,6 +331,7 @@ const Credit = () => {
 
       if (result.data.success) {
         if (result.data.socketID) {
+          console.log(`socket  id :  ${result.data.socketID}`);
           socket.emit("alertUser", {
             userID: result.data.socketID,
             data: "Congratulation your Credit was accepted!!",
